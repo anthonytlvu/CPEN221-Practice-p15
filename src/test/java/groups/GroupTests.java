@@ -20,6 +20,7 @@ public class GroupTests {
      *       |
      *    x3 | x1    x2    x3
      * */
+    @Test
     private ProbableGroup makeGp1() {
         Set<String> elts = new HashSet<String>();
         elts.add("x1");

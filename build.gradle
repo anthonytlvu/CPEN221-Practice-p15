@@ -1,16 +1,18 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
 
-group 'CPEN 221'
-version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.11
-
+// In this section you declare where to find the dependencies of your project
 repositories {
+    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
+test.testLogging {
+    exceptionFormat = "full"
+    events "failed", "passed", "skipped", "standardOut", "standardError"
 }

@@ -1,10 +1,11 @@
 package groups;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ProbableGroup {
 
+    private final Set<String> elts = new HashSet<>();
+    private final Map<Pair<String>, String> productMap = new HashMap<>();
     /**
      * <p>Create an instance of ProbableGroup</p>
      *
@@ -13,7 +14,8 @@ public class ProbableGroup {
      *                 and all pairs of `String`s in elements are keys in opTable
      */
     public ProbableGroup(Set<String> elements, Map<Pair<String>, String> opTable) {
-        // TODO: implement the constructor
+        this.elts.addAll(elements);
+        this.productMap.putAll(opTable);
     }
 
 
@@ -23,8 +25,7 @@ public class ProbableGroup {
      * @return the set of elements in this instance of ProbableGroup
      */
     public Set<String> getElements() {
-        // TODO: implement this method
-        return null;
+        return new HashSet<>(elts);
     }
 
     /**
@@ -33,8 +34,7 @@ public class ProbableGroup {
      * @return the complete operation table for this instance of ProbableGroup
      */
     public Map<Pair<String>, String> getOpTable() {
-        // TODO: Implement this method
-        return null;
+        return new HashMap<>(productMap);
     }
 
     /**
@@ -45,8 +45,7 @@ public class ProbableGroup {
      * @return a * b
      */
     public String product(String a, String b) {
-        // TODO: Implement this method
-        return null;
+        return productMap.get(new Pair<>(a, b));
     }
 
     /**
@@ -55,8 +54,19 @@ public class ProbableGroup {
      * @return the identity of the ProbableGroup if it exists, otherwise returns the empty String ("")
      */
     public String getIdentity() {
-        // TODO: Implement this method
-        return null;
+        int count = 0;
+        for (String strI: elts) {
+            for (String strJ: elts) {
+                if (!Objects.equals(product(strJ, strI), strJ) || !Objects.equals(product(strI, strJ), strJ)){
+                    count = 0;
+                    break;
+                }
+                count++;
+            }
+            if (count == elts.size()) return strI;
+        }
+
+        return "";
     }
 
     /**
@@ -66,8 +76,12 @@ public class ProbableGroup {
      * @return the inverse of a, a', such that a * a' = e if it exists, otherwise returns the empty String ("")
      */
     public String getInverse(String a) {
-        // TODO: Implement this method
-        return null;
+        String id = getIdentity();
+        for (String strI: elts) {
+            if (Objects.equals(product(a, strI), id) && Objects.equals(product(strI, a), id)) return strI;
+        }
+
+        return "";
     }
 
     /**
@@ -78,8 +92,16 @@ public class ProbableGroup {
      * @return a^n
      */
     public String power(String a, int n) {
-        // TODO: Implement this method
-        return null;
+        if (n == 1) return a;
+        if (n > 1) {
+            String power = product(a, a);
+            for (int i = 2; i < n; i++) {
+                power = product(power, a);
+            }
+            return power;
+        }
+
+        return "";
     }
 
     /**
@@ -91,8 +113,11 @@ public class ProbableGroup {
      * @return the order of element a in this ProbableGroup
      */
     public int order(String a) {
-        // TODO: Implement this method
-        return -1;
+        String str = getIdentity();
+        for (int i = 0; i < productMap.size(); i++)
+            if (Objects.equals(power(a, i), str)) return i;
+
+        return 0;
     }
 
     /**
@@ -101,8 +126,16 @@ public class ProbableGroup {
      * @return true if the ProbableGroup is a group, otherwise return false
      */
     public boolean isGroup() {
-        // TODO: Implement this method
-        return false;
+        if (Objects.equals(getIdentity(), "")) return false;
+        for (String str1: elts) if (Objects.equals(getInverse(str1), "")) return false;
+        for (String x1: elts)
+            for (String x2: elts)
+                for (String x3: elts)
+                    if (!Objects.equals(product(x1, product(x2, x3)), product(product(x1, x2), x3))) return false;
+        for (String x1: elts)
+            for (String x2: elts)
+                if(!elts.contains(product(x1, x2))) return false;
+        return true;
     }
 
     /**
@@ -111,8 +144,10 @@ public class ProbableGroup {
      * @return true if the Probable Group is commutative, otherwise return false
      */
     public boolean isCommutative() {
-        // TODO: Implement this method
-        return false;
+        for (String strI: elts)
+            for (String strJ: elts)
+                if (!Objects.equals(product(strJ, strI), product(strI, strJ))) return false;
+        return true;
     }
 
     /**
@@ -122,7 +157,11 @@ public class ProbableGroup {
      * @return true if h is a subgroup of this instance, otherwise return false
      */
     public boolean isSubgroup(Set<String> h) {
-        // TODO: Implement this method
-        return false;
+        for (String str1: h) {
+            if(!h.contains(getInverse(str1))) return false;
+            for (String str2: h) if(!h.contains(product(str1, str2))) return false;
+        }
+
+        return true;
     }
 }
