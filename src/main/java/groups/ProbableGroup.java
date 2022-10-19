@@ -91,16 +91,21 @@ public class ProbableGroup {
      * @param n n > 0 and n is the exponent that we would like to raise a to
      * @return a^n
      */
+//    public String power(String a, int n) {
+//        if (n == 1) return a;
+//        if (n > 1) {
+//            String power = product(a, a);
+//            for (int i = 2; i < n; i++) {
+//                power = product(power, a);
+//            }
+//            return power;
+//        }
+//
+//        return "";
+//    }
     public String power(String a, int n) {
         if (n == 1) return a;
-        if (n > 1) {
-            String power = product(a, a);
-            for (int i = 2; i < n; i++) {
-                power = product(power, a);
-            }
-            return power;
-        }
-
+        if (n > 1) return product(a, power(a, n - 1));
         return "";
     }
 
